@@ -181,37 +181,36 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
     <button id="editLocation" class="text-button" type="button">Edit location</button>
   </div>
 
-  <form id="locationForm">
-    <div class="grid2">
-      <div class="field">
-        <label for="city">City / town</label>
-        <input id="city" placeholder="e.g. Guwahati" required maxlength="80">
-      </div>
-      <div class="field">
-        <label for="state">State / UT</label>
-        <input id="state" placeholder="e.g. Assam" required maxlength="80">
-      </div>
-    </div>
+  
+<form id="locationForm">
+  <div class="field">
+    <label for="city">City / town</label>
+    <input id="city" placeholder="e.g. Guwahati" required maxlength="80">
+  </div>
 
-    <div class="field">
-      <label for="country">Country</label>
-      <select id="country">
-        <option value="India">India</option>
-        <option value="Other">Other country</option>
-      </select>
-    </div>
+  <div class="field">
+    <label for="state">State / Union Territory</label>
+    <input id="state" placeholder="e.g. Assam" required maxlength="80">
+  </div>
 
-    <div class="actions">
-      <button class="primary" type="submit">Save location</button>
-      <button id="useLocation" class="secondary" type="button">Use device location</button>
-    </div>
+  <div class="field">
+    <label for="road">Road name / locality</label>
+    <input id="road" placeholder="e.g. GS Road or nearby locality"
+           required maxlength="120">
+  </div>
 
-    <p id="savedLocation" class="saved" aria-live="polite"></p>
-    <p class="hint">
-      Your saved location stays in this browser. Device location is optional.
-      NearBites only supports locations in India.
-    </p>
-  </form>
+  <p class="hint">
+    Enter your Indian city, state, and road or locality.
+    We will check the location before searching.
+  </p>
+
+  <div class="actions">
+    <button class="primary" type="submit">Verify and save location</button>
+  </div>
+
+  <p id="savedLocation" class="saved" aria-live="polite"></p>
+</form>
+
 </section>
 
 <section class="panel">
