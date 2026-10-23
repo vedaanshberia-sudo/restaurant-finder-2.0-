@@ -106,6 +106,7 @@ input:focus,select:focus {
   box-shadow:0 5px 0 #d85d32; flex:1;
 }
 .primary:hover { background:var(--dark); }
+.primary:disabled { opacity:.65; cursor:wait; }
 .secondary {
   border:1px solid var(--line); background:white;
   border-radius:12px; padding:12px; font-weight:800;
@@ -181,36 +182,34 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
     <button id="editLocation" class="text-button" type="button">Edit location</button>
   </div>
 
-  
-<form id="locationForm">
-  <div class="field">
-    <label for="city">City / town</label>
-    <input id="city" placeholder="e.g. Guwahati" required maxlength="80">
-  </div>
+  <form id="locationForm">
+    <div class="field">
+      <label for="city">City / town</label>
+      <input id="city" placeholder="e.g. Guwahati" required maxlength="80">
+    </div>
 
-  <div class="field">
-    <label for="state">State / Union Territory</label>
-    <input id="state" placeholder="e.g. Assam" required maxlength="80">
-  </div>
+    <div class="field">
+      <label for="state">State / Union Territory</label>
+      <input id="state" placeholder="e.g. Assam" required maxlength="80">
+    </div>
 
-  <div class="field">
-    <label for="road">Road name / locality</label>
-    <input id="road" placeholder="e.g. GS Road or nearby locality"
-           required maxlength="120">
-  </div>
+    <div class="field">
+      <label for="road">Road name / locality</label>
+      <input id="road" placeholder="e.g. GS Road or nearby locality"
+             required maxlength="120">
+    </div>
 
-  <p class="hint">
-    Enter your Indian city, state, and road or locality.
-    We will check the location before searching.
-  </p>
+    <p class="hint">
+      Enter your Indian city, state, and road or locality.
+      We will check the location before searching.
+    </p>
 
-  <div class="actions">
-    <button class="primary" type="submit">Verify and save location</button>
-  </div>
+    <div class="actions">
+      <button class="primary" type="submit">Verify and save location</button>
+    </div>
 
-  <p id="savedLocation" class="saved" aria-live="polite"></p>
-</form>
-
+    <p id="savedLocation" class="saved" aria-live="polite"></p>
+  </form>
 </section>
 
 <section class="panel">
@@ -220,17 +219,12 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
   <form id="preferences">
 
     <div class="question">
-      <span class="question-title">1. What do you feel like eating?</span>
-      <div class="choices" id="foodChoices"></div>
-    </div>
-
-    <div class="question">
-      <span class="question-title">2. Which cuisine sounds good?</span>
+      <span class="question-title">1. Which cuisine sounds good?</span>
       <div class="choices" id="cuisineChoices"></div>
     </div>
 
     <div class="question">
-      <label class="question-title" for="budget">3. Your budget per person?</label>
+      <label class="question-title" for="budget">2. Your budget per person?</label>
       <select id="budget">
         <option value="any">No preference</option>
         <option value="low">Budget — under ₹300</option>
@@ -240,22 +234,22 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
     </div>
 
     <div class="question">
-      <span class="question-title">4. What kind of place?</span>
+      <span class="question-title">3. What kind of place?</span>
       <div class="choices" id="placeChoices"></div>
     </div>
 
     <div class="question">
-      <span class="question-title">5. Pick the vibe</span>
+      <span class="question-title">4. Pick the vibe</span>
       <div class="choices" id="vibeChoices"></div>
     </div>
 
     <div class="question">
-      <span class="question-title">6. Dietary preferences</span>
+      <span class="question-title">5. Dietary preferences</span>
       <div class="choices" id="dietChoices"></div>
     </div>
 
     <div class="question">
-      <label class="question-title" for="priority">7. What matters most?</label>
+      <label class="question-title" for="priority">6. What matters most?</label>
       <select id="priority">
         <option value="match">Best overall match</option>
         <option value="distance">Closest first</option>
@@ -265,7 +259,7 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
     </div>
 
     <div class="question">
-      <label class="question-title" for="radius">8. How far would you travel?</label>
+      <label class="question-title" for="radius">7. How far would you travel?</label>
       <select id="radius">
         <option value="1000">Within 1 km</option>
         <option value="3000">Within 3 km</option>
@@ -316,11 +310,6 @@ footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; 
 const $ = id => document.getElementById(id);
 
 const options = {
-  foodChoices: [
-    "Anything","Pizza","Burgers","Pasta","Biryani","Noodles","Sushi",
-    "Dosa","Thali","Momos","Sandwiches","Street food","Desserts",
-    "Ice cream","Bakery","Healthy food","Seafood","Grilled food"
-  ],
   cuisineChoices: [
     "Any cuisine","Indian","North Indian","South Indian","Bengali",
     "Assamese","Punjabi","Gujarati","Rajasthani","Mughlai","Chinese",
@@ -352,8 +341,7 @@ function renderChoices(id, items, name) {
     input.name = name;
     input.value = item;
 
-    if (index === 0 &&
-        (item === "Anything" || item === "Any cuisine")) {
+    if (index === 0 && item === "Any cuisine") {
       input.checked = true;
     }
 
@@ -365,7 +353,6 @@ function renderChoices(id, items, name) {
   });
 }
 
-renderChoices("foodChoices", options.foodChoices, "food");
 renderChoices("cuisineChoices", options.cuisineChoices, "cuisine");
 renderChoices("placeChoices", options.placeChoices, "place");
 renderChoices("vibeChoices", options.vibeChoices, "vibe");
@@ -376,21 +363,38 @@ let locationData = null;
 
 function showSaved() {
   $("savedLocation").textContent = locationData
-    ? `✓ Saved: ${locationData.city}, ${locationData.state}, India`
-    : "No location saved yet.";
+    ? `✓ Verified and saved: ${locationData.road}, ${locationData.city}, ${locationData.state}, India`
+    : "No verified location saved yet.";
 
   $("city").value = locationData?.city || "";
   $("state").value = locationData?.state || "";
-  $("country").value = "India";
+  $("road").value = locationData?.road || "";
 }
 
 try {
   const saved = localStorage.getItem(LOCATION_KEY);
+
   if (saved) {
-    locationData = JSON.parse(saved);
-    showSaved();
+    const parsed = JSON.parse(saved);
+
+    if (
+      parsed &&
+      parsed.country === "India" &&
+      parsed.city &&
+      parsed.state &&
+      parsed.road &&
+      Number.isFinite(Number(parsed.lat)) &&
+      Number.isFinite(Number(parsed.lon))
+    ) {
+      locationData = parsed;
+      showSaved();
+    } else {
+      localStorage.removeItem(LOCATION_KEY);
+    }
   }
-} catch {}
+} catch {
+  localStorage.removeItem(LOCATION_KEY);
+}
 
 $("year").textContent = new Date().getFullYear();
 
@@ -411,94 +415,87 @@ function hideStatus() {
   $("status").classList.remove("show");
 }
 
-$("country").addEventListener("change", () => {
-  if ($("country").value !== "India") {
-    showStatus("NearBites only supports locations in India.");
-    $("country").value = "India";
-  }
-});
-
-$("locationForm").addEventListener("submit", event => {
+$("locationForm").addEventListener("submit", async event => {
   event.preventDefault();
+  hideStatus();
 
   const city = $("city").value.trim();
   const state = $("state").value.trim();
+  const road = $("road").value.trim();
 
-  if ($("country").value !== "India") {
-    showStatus("Sorry, this app only supports India.");
+  if (!city || !state || !road) {
+    showStatus("Enter your city, state, and road or locality.");
     return;
   }
 
-  if (!city || !state) {
-    showStatus("Enter both your city and state.");
-    return;
-  }
+  const button = $("locationForm").querySelector('button[type="submit"]');
+  const originalText = button.textContent;
 
-  // Re-geocode manually entered locations on the backend.
-  locationData = {
-    city,
-    state,
-    country: "India",
-    savedAt: new Date().toISOString()
-  };
+  button.disabled = true;
+  button.textContent = "Verifying location…";
+  $("savedLocation").textContent =
+    "Checking the city, state, and road against map data…";
 
-  localStorage.setItem(LOCATION_KEY, JSON.stringify(locationData));
-  showSaved();
-  hideStatus();
-});
+  try {
+    const response = await fetch("/.netlify/functions/validate-location", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ city, state, road })
+    });
 
-$("useLocation").addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    showStatus("Location is unavailable in this browser. Enter your city and state instead.");
-    return;
-  }
+    const data = await response.json().catch(() => ({}));
 
-  showStatus("Requesting permission to use your device location…");
-
-  navigator.geolocation.getCurrentPosition(async position => {
-    try {
-      const response = await fetch(
-        "/.netlify/functions/reverse-geocode",
-        {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude
-          })
-        }
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "We couldn't verify that location. Check the spelling or try a nearby mapped locality."
       );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Could not verify location.");
-      }
-
-      locationData = {
-        city: data.city,
-        state: data.state,
-        country: "India",
-        lat: position.coords.latitude,
-        lon: position.coords.longitude,
-        savedAt: new Date().toISOString()
-      };
-
-      localStorage.setItem(LOCATION_KEY, JSON.stringify(locationData));
-      showSaved();
-      hideStatus();
-
-    } catch (error) {
-      showStatus(error.message + " Enter your Indian city and state manually.");
     }
 
-  }, () => {
-    showStatus("Location permission was unavailable. Enter your city and state manually.");
-  }, {
-    enableHighAccuracy: false,
-    timeout: 12000,
-    maximumAge: 300000
-  });
+    if (
+      !data.city ||
+      !data.state ||
+      !data.road ||
+      !Number.isFinite(Number(data.lat)) ||
+      !Number.isFinite(Number(data.lon)) ||
+      String(data.country || "").toLowerCase() !== "india"
+    ) {
+      throw new Error(
+        "The map service returned incomplete location details. Please try again."
+      );
+    }
+
+    locationData = {
+      city: data.city,
+      state: data.state,
+      road: data.road,
+      country: "India",
+      lat: Number(data.lat),
+      lon: Number(data.lon),
+      displayName: data.displayName || "",
+      savedAt: new Date().toISOString()
+    };
+
+    localStorage.setItem(LOCATION_KEY, JSON.stringify(locationData));
+    showSaved();
+    hideStatus();
+
+  } catch (error) {
+    locationData = null;
+    localStorage.removeItem(LOCATION_KEY);
+
+    $("savedLocation").textContent =
+      "Location not saved. Please check the details and try again.";
+
+    showStatus(
+      error.message ||
+      "We couldn't verify this location. Please try again."
+    );
+
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
 });
 
 function selected(name) {
@@ -509,7 +506,7 @@ function selected(name) {
 
 $("reset").addEventListener("click", () => {
   setTimeout(() => {
-    // The reset button resets preferences, not the saved location.
+    // Reset preferences only. Keep the saved location.
   }, 0);
 });
 
@@ -518,17 +515,20 @@ $("preferences").addEventListener("submit", async event => {
   hideStatus();
 
   if (!locationData) {
-    showStatus("First save your Indian city and state.");
+    showStatus(
+      "First verify and save your Indian city, state, and road or locality."
+    );
+
     $("locationForm").scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
+
     return;
   }
 
   const payload = {
     location: locationData,
-    food: selected("food").filter(x => x !== "Anything"),
     cuisine: selected("cuisine").filter(x => x !== "Any cuisine"),
     budget: $("budget").value,
     places: selected("place"),
@@ -559,7 +559,7 @@ $("preferences").addEventListener("submit", async event => {
       "/.netlify/functions/search-restaurants",
       {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }
     );
@@ -570,17 +570,25 @@ $("preferences").addEventListener("submit", async event => {
       throw new Error(data.error || "Restaurant search failed.");
     }
 
-    renderResults(data.restaurants || []);
-    $("resultCount").textContent =
-      `${data.restaurants.length} places found`;
+    const restaurants = Array.isArray(data.restaurants)
+      ? data.restaurants
+      : [];
 
-    if (data.note) showStatus(data.note);
-    else hideStatus();
+    renderResults(restaurants);
+    $("resultCount").textContent =
+      `${restaurants.length} places found`;
+
+    if (data.note) {
+      showStatus(data.note);
+    } else {
+      hideStatus();
+    }
 
   } catch (error) {
     $("results").innerHTML =
       '<div class="empty">We could not load places. Please try again.</div>';
-    showStatus(error.message);
+
+    showStatus(error.message || "Restaurant search failed.");
 
   } finally {
     button.disabled = false;
@@ -619,21 +627,32 @@ function renderResults(items) {
     ].filter(Boolean).slice(0, 4);
 
     card.innerHTML = `
-      <div class="rank">${index === 0 ? "★ Top match" : `MATCH #${index + 1}`}</div>
+      <div class="rank">
+        ${index === 0 ? "★ Top match" : `MATCH #${index + 1}`}
+      </div>
       <h3>${escapeHtml(restaurant.name)}</h3>
       <div class="meta">
-        ${escapeHtml(restaurant.distanceLabel)} away
+        ${escapeHtml(restaurant.distanceLabel || "Distance unavailable")} away
         ${restaurant.address ? " · " + escapeHtml(restaurant.address) : ""}
       </div>
       <div class="tags">
         ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <div class="match">${escapeHtml(restaurant.matchReason || "Nearby option")}</div>
+      <div class="match">
+        ${escapeHtml(restaurant.matchReason || "Nearby option")}
+      </div>
       <div class="meta">
-        ${restaurant.rating ? "Rating: " + escapeHtml(restaurant.rating) : "Rating unavailable"}
+        ${restaurant.rating
+          ? "Rating: " + escapeHtml(restaurant.rating)
+          : "Rating unavailable"}
         ${restaurant.price ? " · " + escapeHtml(restaurant.price) : ""}
       </div>
-      <p><a href="${escapeHtml(restaurant.mapUrl)}" target="_blank" rel="noopener noreferrer">View on OpenStreetMap ↗</a></p>
+      <p>
+        <a href="${escapeHtml(restaurant.mapUrl || "https://www.openstreetmap.org/")}"
+           target="_blank" rel="noopener noreferrer">
+          View on OpenStreetMap ↗
+        </a>
+      </p>
     `;
 
     host.append(card);
