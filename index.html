@@ -1,0 +1,645 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff8ef">
+<title>NearBites — Find your next favourite</title>
+<meta name="description" content="Find restaurants and cafés across India.">
+
+<style>
+:root {
+  --ink:#24221f;
+  --muted:#706b64;
+  --paper:#fffaf3;
+  --orange:#f47745;
+  --dark:#d9572c;
+  --line:#eee4d8;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+}
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+.wrap { max-width:1100px; margin:auto; padding:24px 20px 60px; }
+.nav {
+  display:flex; align-items:center;
+  justify-content:space-between; margin-bottom:35px;
+}
+.brand { font-size:1.4rem; font-weight:900; letter-spacing:-.05em; }
+.brand span { color:var(--orange); }
+.pill {
+  border:1px solid #f3d8c8; background:#fff1e8;
+  color:#9b4728; border-radius:999px; padding:8px 12px;
+  font-size:.82rem; font-weight:700;
+}
+.hero { padding:25px 0; max-width:760px; }
+.eyebrow {
+  font-size:.78rem; text-transform:uppercase;
+  letter-spacing:.13em; color:var(--dark); font-weight:900;
+}
+h1 {
+  font-size:clamp(2.5rem,7vw,5rem);
+  line-height:.98; letter-spacing:-.065em; margin:14px 0;
+}
+h1 em { font-style:normal; color:var(--orange); }
+.intro { color:var(--muted); line-height:1.7; font-size:1.05rem; }
+.layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:20px; align-items:start;
+}
+.panel {
+  background:white; border:1px solid var(--line);
+  border-radius:24px; padding:24px;
+  box-shadow:0 10px 35px #5c35100a;
+}
+.panel h2 { margin:0 0 7px; font-size:1.3rem; }
+.sub { color:var(--muted); font-size:.9rem; line-height:1.5; }
+.field { margin-bottom:16px; }
+.field label,.question-title {
+  display:block; font-weight:800; font-size:.92rem;
+  margin-bottom:8px;
+}
+input,select {
+  width:100%; border:1px solid #e7ddd1;
+  border-radius:12px; background:#fffdfa;
+  padding:12px; color:var(--ink);
+}
+input:focus,select:focus {
+  outline:2px solid #f4774540; border-color:var(--orange);
+}
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.location-head {
+  display:flex; justify-content:space-between;
+  align-items:center; gap:12px; margin-bottom:18px;
+}
+.text-button {
+  background:transparent; border:0; color:var(--dark);
+  font-weight:800; padding:5px;
+}
+.saved { color:#246a4b; font-size:.85rem; min-height:1.2em; }
+.question { padding:17px 0; border-top:1px solid #f1e8de; }
+.choices { display:flex; flex-wrap:wrap; gap:8px; }
+.choice { position:relative; }
+.choice input {
+  position:absolute; opacity:0; width:1px; height:1px;
+}
+.choice span {
+  display:inline-block; border:1px solid #e8ded3;
+  background:#fffdfa; padding:9px 12px;
+  border-radius:999px; font-size:.85rem; transition:.15s;
+}
+.choice input:checked+span {
+  background:#fff0e7; border-color:var(--orange);
+  color:#9b4728; font-weight:800;
+}
+.choice input:focus-visible+span { outline:3px solid #f4774540; }
+.actions { display:flex; gap:10px; margin-top:18px; }
+.primary {
+  border:0; background:var(--orange); color:white;
+  font-weight:900; border-radius:14px; padding:14px;
+  box-shadow:0 5px 0 #d85d32; flex:1;
+}
+.primary:hover { background:var(--dark); }
+.secondary {
+  border:1px solid var(--line); background:white;
+  border-radius:12px; padding:12px; font-weight:800;
+}
+.hint { color:var(--muted); font-size:.8rem; line-height:1.5; }
+.status {
+  padding:14px; border-radius:14px; background:#fff4e9;
+  color:#8a4829; line-height:1.5; margin-top:14px; display:none;
+}
+.status.show { display:block; }
+.results { margin-top:30px; }
+.results-head {
+  display:flex; justify-content:space-between;
+  align-items:end; gap:12px; margin-bottom:15px;
+}
+.results-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;
+}
+.restaurant {
+  background:white; border:1px solid var(--line);
+  border-radius:20px; padding:18px; min-width:0;
+}
+.restaurant.best { border:2px solid #f6a17e; }
+.rank {
+  font-size:.75rem; font-weight:900; color:var(--dark);
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.restaurant h3 { font-size:1.1rem; margin:9px 0; }
+.meta { font-size:.85rem; color:var(--muted); line-height:1.6; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.tag { font-size:.75rem; background:#f8f1e9; border-radius:999px; padding:5px 8px; }
+.match { font-size:.83rem; color:#246a4b; font-weight:800; margin:10px 0; }
+.restaurant a { color:#a84825; font-weight:800; text-decoration:none; }
+.empty {
+  padding:28px; text-align:center; border:1px dashed #e8d8c7;
+  border-radius:18px; color:var(--muted); grid-column:1/-1;
+}
+footer { margin-top:32px; color:var(--muted); font-size:.8rem; line-height:1.6; }
+
+@media(max-width:800px) {
+  .layout,.results-grid { grid-template-columns:1fr; }
+  .panel { padding:19px; }
+  .wrap { padding:18px 14px 40px; }
+}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+
+<header class="nav">
+  <div class="brand">near<span>bites.</span></div>
+  <div class="pill">Made for food moods 🇮🇳</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Your next favourite is nearby</div>
+  <h1>Tell us your mood.<br><em>We'll find the food.</em></h1>
+  <p class="intro">
+    Discover restaurants, cafés and bakeries around India.
+    Answer a few questions and find a place that matches your mood.
+  </p>
+</section>
+
+<div class="layout">
+
+<section class="panel">
+  <div class="location-head">
+    <div>
+      <h2>Your location</h2>
+      <p class="sub">Saved in this browser for future visits.</p>
+    </div>
+    <button id="editLocation" class="text-button" type="button">Edit location</button>
+  </div>
+
+  <form id="locationForm">
+    <div class="grid2">
+      <div class="field">
+        <label for="city">City / town</label>
+        <input id="city" placeholder="e.g. Guwahati" required maxlength="80">
+      </div>
+      <div class="field">
+        <label for="state">State / UT</label>
+        <input id="state" placeholder="e.g. Assam" required maxlength="80">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="country">Country</label>
+      <select id="country">
+        <option value="India">India</option>
+        <option value="Other">Other country</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="primary" type="submit">Save location</button>
+      <button id="useLocation" class="secondary" type="button">Use device location</button>
+    </div>
+
+    <p id="savedLocation" class="saved" aria-live="polite"></p>
+    <p class="hint">
+      Your saved location stays in this browser. Device location is optional.
+      NearBites only supports locations in India.
+    </p>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>What's the craving?</h2>
+  <p class="sub">Choose as many options as you like.</p>
+
+  <form id="preferences">
+
+    <div class="question">
+      <span class="question-title">1. What do you feel like eating?</span>
+      <div class="choices" id="foodChoices"></div>
+    </div>
+
+    <div class="question">
+      <span class="question-title">2. Which cuisine sounds good?</span>
+      <div class="choices" id="cuisineChoices"></div>
+    </div>
+
+    <div class="question">
+      <label class="question-title" for="budget">3. Your budget per person?</label>
+      <select id="budget">
+        <option value="any">No preference</option>
+        <option value="low">Budget — under ₹300</option>
+        <option value="mid">Moderate — ₹300–₹800</option>
+        <option value="high">Premium — ₹800+</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <span class="question-title">4. What kind of place?</span>
+      <div class="choices" id="placeChoices"></div>
+    </div>
+
+    <div class="question">
+      <span class="question-title">5. Pick the vibe</span>
+      <div class="choices" id="vibeChoices"></div>
+    </div>
+
+    <div class="question">
+      <span class="question-title">6. Dietary preferences</span>
+      <div class="choices" id="dietChoices"></div>
+    </div>
+
+    <div class="question">
+      <label class="question-title" for="priority">7. What matters most?</label>
+      <select id="priority">
+        <option value="match">Best overall match</option>
+        <option value="distance">Closest first</option>
+        <option value="rating">Highest-rated, if ratings exist</option>
+        <option value="value">Value for money</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label class="question-title" for="radius">8. How far would you travel?</label>
+      <select id="radius">
+        <option value="1000">Within 1 km</option>
+        <option value="3000">Within 3 km</option>
+        <option value="5000" selected>Within 5 km</option>
+        <option value="10000">Within 10 km</option>
+        <option value="20000">Within 20 km</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="primary" type="submit">Find my food ✨</button>
+      <button class="secondary" id="reset" type="reset">Reset</button>
+    </div>
+
+    <p class="hint">
+      Results use OpenStreetMap data. Coverage and restaurant details
+      vary by location.
+    </p>
+  </form>
+
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+</section>
+
+</div>
+
+<section class="results" id="resultsSection" hidden>
+  <div class="results-head">
+    <div>
+      <div class="eyebrow">Your shortlist</div>
+      <h2>Good things are nearby.</h2>
+    </div>
+    <span id="resultCount" class="hint"></span>
+  </div>
+  <div id="results" class="results-grid"></div>
+</section>
+
+<footer>
+  NearBites is an independent restaurant discovery tool.
+  Data comes from OpenStreetMap contributors. Distances are straight-line
+  estimates, not driving distances. Ratings, prices, menus and opening hours
+  may be unavailable or unverified.
+  © <span id="year"></span> NearBites.
+</footer>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const options = {
+  foodChoices: [
+    "Anything","Pizza","Burgers","Pasta","Biryani","Noodles","Sushi",
+    "Dosa","Thali","Momos","Sandwiches","Street food","Desserts",
+    "Ice cream","Bakery","Healthy food","Seafood","Grilled food"
+  ],
+  cuisineChoices: [
+    "Any cuisine","Indian","North Indian","South Indian","Bengali",
+    "Assamese","Punjabi","Gujarati","Rajasthani","Mughlai","Chinese",
+    "Italian","Japanese","Korean","Thai","Mexican","American",
+    "Mediterranean","Middle Eastern","Continental"
+  ],
+  placeChoices: [
+    "Restaurant","Café","Bakery","Fast food","Food court",
+    "Dessert shop","Vegetarian place"
+  ],
+  vibeChoices: [
+    "Cozy","Aesthetic","Quiet","Casual","Family-friendly",
+    "Trendy","Romantic","Lively","Outdoor seating"
+  ],
+  dietChoices: [
+    "Vegetarian","Vegan","Jain","Halal","Gluten-free","Dairy-free"
+  ]
+};
+
+function renderChoices(id, items, name) {
+  const host = $(id);
+
+  items.forEach((item, index) => {
+    const label = document.createElement("label");
+    label.className = "choice";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = name;
+    input.value = item;
+
+    if (index === 0 &&
+        (item === "Anything" || item === "Any cuisine")) {
+      input.checked = true;
+    }
+
+    const span = document.createElement("span");
+    span.textContent = item;
+
+    label.append(input, span);
+    host.append(label);
+  });
+}
+
+renderChoices("foodChoices", options.foodChoices, "food");
+renderChoices("cuisineChoices", options.cuisineChoices, "cuisine");
+renderChoices("placeChoices", options.placeChoices, "place");
+renderChoices("vibeChoices", options.vibeChoices, "vibe");
+renderChoices("dietChoices", options.dietChoices, "diet");
+
+const LOCATION_KEY = "nearbites_india_location_v1";
+let locationData = null;
+
+function showSaved() {
+  $("savedLocation").textContent = locationData
+    ? `✓ Saved: ${locationData.city}, ${locationData.state}, India`
+    : "No location saved yet.";
+
+  $("city").value = locationData?.city || "";
+  $("state").value = locationData?.state || "";
+  $("country").value = "India";
+}
+
+try {
+  const saved = localStorage.getItem(LOCATION_KEY);
+  if (saved) {
+    locationData = JSON.parse(saved);
+    showSaved();
+  }
+} catch {}
+
+$("year").textContent = new Date().getFullYear();
+
+$("editLocation").addEventListener("click", () => {
+  $("city").focus();
+  $("locationForm").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+});
+
+function showStatus(message) {
+  $("status").textContent = message;
+  $("status").classList.add("show");
+}
+
+function hideStatus() {
+  $("status").classList.remove("show");
+}
+
+$("country").addEventListener("change", () => {
+  if ($("country").value !== "India") {
+    showStatus("NearBites only supports locations in India.");
+    $("country").value = "India";
+  }
+});
+
+$("locationForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const city = $("city").value.trim();
+  const state = $("state").value.trim();
+
+  if ($("country").value !== "India") {
+    showStatus("Sorry, this app only supports India.");
+    return;
+  }
+
+  if (!city || !state) {
+    showStatus("Enter both your city and state.");
+    return;
+  }
+
+  // Re-geocode manually entered locations on the backend.
+  locationData = {
+    city,
+    state,
+    country: "India",
+    savedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem(LOCATION_KEY, JSON.stringify(locationData));
+  showSaved();
+  hideStatus();
+});
+
+$("useLocation").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    showStatus("Location is unavailable in this browser. Enter your city and state instead.");
+    return;
+  }
+
+  showStatus("Requesting permission to use your device location…");
+
+  navigator.geolocation.getCurrentPosition(async position => {
+    try {
+      const response = await fetch(
+        "/.netlify/functions/reverse-geocode",
+        {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not verify location.");
+      }
+
+      locationData = {
+        city: data.city,
+        state: data.state,
+        country: "India",
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+        savedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(LOCATION_KEY, JSON.stringify(locationData));
+      showSaved();
+      hideStatus();
+
+    } catch (error) {
+      showStatus(error.message + " Enter your Indian city and state manually.");
+    }
+
+  }, () => {
+    showStatus("Location permission was unavailable. Enter your city and state manually.");
+  }, {
+    enableHighAccuracy: false,
+    timeout: 12000,
+    maximumAge: 300000
+  });
+});
+
+function selected(name) {
+  return [...document.querySelectorAll(
+    `input[name="${name}"]:checked`
+  )].map(input => input.value);
+}
+
+$("reset").addEventListener("click", () => {
+  setTimeout(() => {
+    // The reset button resets preferences, not the saved location.
+  }, 0);
+});
+
+$("preferences").addEventListener("submit", async event => {
+  event.preventDefault();
+  hideStatus();
+
+  if (!locationData) {
+    showStatus("First save your Indian city and state.");
+    $("locationForm").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+    return;
+  }
+
+  const payload = {
+    location: locationData,
+    food: selected("food").filter(x => x !== "Anything"),
+    cuisine: selected("cuisine").filter(x => x !== "Any cuisine"),
+    budget: $("budget").value,
+    places: selected("place"),
+    vibes: selected("vibe"),
+    diet: selected("diet"),
+    priority: $("priority").value,
+    radius: Number($("radius").value)
+  };
+
+  const button = $("preferences").querySelector(
+    'button[type="submit"]'
+  );
+
+  button.disabled = true;
+  button.textContent = "Finding nearby places…";
+
+  $("resultsSection").hidden = false;
+  $("results").innerHTML =
+    '<div class="empty">Searching nearby map data…</div>';
+
+  $("resultsSection").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  try {
+    const response = await fetch(
+      "/.netlify/functions/search-restaurants",
+      {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Restaurant search failed.");
+    }
+
+    renderResults(data.restaurants || []);
+    $("resultCount").textContent =
+      `${data.restaurants.length} places found`;
+
+    if (data.note) showStatus(data.note);
+    else hideStatus();
+
+  } catch (error) {
+    $("results").innerHTML =
+      '<div class="empty">We could not load places. Please try again.</div>';
+    showStatus(error.message);
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Find my food ✨";
+  }
+});
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+function renderResults(items) {
+  const host = $("results");
+  host.innerHTML = "";
+
+  if (!items.length) {
+    host.innerHTML =
+      '<div class="empty">No named places were found nearby. Try a larger distance or fewer preferences.</div>';
+    return;
+  }
+
+  items.forEach((restaurant, index) => {
+    const card = document.createElement("article");
+    card.className = "restaurant" + (index === 0 ? " best" : "");
+
+    const tags = [
+      restaurant.cuisine,
+      restaurant.kind,
+      restaurant.diet
+    ].filter(Boolean).slice(0, 4);
+
+    card.innerHTML = `
+      <div class="rank">${index === 0 ? "★ Top match" : `MATCH #${index + 1}`}</div>
+      <h3>${escapeHtml(restaurant.name)}</h3>
+      <div class="meta">
+        ${escapeHtml(restaurant.distanceLabel)} away
+        ${restaurant.address ? " · " + escapeHtml(restaurant.address) : ""}
+      </div>
+      <div class="tags">
+        ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
+      </div>
+      <div class="match">${escapeHtml(restaurant.matchReason || "Nearby option")}</div>
+      <div class="meta">
+        ${restaurant.rating ? "Rating: " + escapeHtml(restaurant.rating) : "Rating unavailable"}
+        ${restaurant.price ? " · " + escapeHtml(restaurant.price) : ""}
+      </div>
+      <p><a href="${escapeHtml(restaurant.mapUrl)}" target="_blank" rel="noopener noreferrer">View on OpenStreetMap ↗</a></p>
+    `;
+
+    host.append(card);
+  });
+}
+</script>
+</body>
+</html>
